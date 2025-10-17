@@ -47,7 +47,21 @@
     .sparkle{position:absolute;width:6px;height:6px;background:rgba(255,255,255,0.6);border-radius:50%;animation:twinkle 2s infinite;z-index:0}
     @keyframes twinkle{0%,100%{opacity:0.2}50%{opacity:1;transform:scale(1.4)}}
 
-    @media(max-width:600px){.card-container{height:350px}}
+    @media(max-width:600px){
+  .card-container{
+  width:360px;
+  max-width:90%;
+  height:auto;           /* let it grow with content */
+  min-height:400px;      /* ensures some initial height */
+  transform-style:preserve-3d;
+  animation:cardEntrance 1s ease-out forwards;
+  opacity:1;
+  z-index:5;
+  padding:20px 0;       /* add some padding */
+}
+
+  .birthday-card{max-height:70vh; font-size:16px; padding:16px;}
+}
   </style>
 </head>
 <body>
