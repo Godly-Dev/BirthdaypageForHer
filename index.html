@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1">
+<title>Kanisha's Secret L-Code 💖</title>
+<style>
+  :root{
+    --bg:#05030a; --pink1:#ff9fc0; --pink2:#ff6fa3; --accent:#ffe4f0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:Inter,ui-sans-serif,-apple-system,'Segoe UI',Roboto;color:#fff;background:var(--bg);overflow:hidden;}
+
+  main{width:100%;height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  #bgCanvas{position:absolute;inset:0;z-index:1}
+
+  .container{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;gap:20px}
+  h1{text-align:center;font-size:28px;color:var(--accent);margin-bottom:12px}
+  input{padding:14px 16px;font-size:16px;border-radius:12px;border:none;width:240px;text-align:center}
+  button{padding:12px 20px;font-size:16px;border-radius:12px;border:none;background:var(--pink2);color:#fff;cursor:pointer;transition:all 0.3s ease;}
+  button:hover{background:var(--pink1);transform:scale(1.05);}
+
+  @media(max-width:600px){input{width:80%}}
+</style>
+</head>
+<body>
+
+<main>
+  <canvas id="bgCanvas"></canvas>
+  <div class="container">
+    <h1>Enter the Secret L-Code 💖</h1>
+    <input type="text" id="codeInput" placeholder="Type the secret code...">
+    <button onclick="checkCode()">Unlock 💌</button>
+  </div>
+</main>
+
+<script>
+  // Floating Petals Background
+  const canvas=document.getElementById('bgCanvas');
+  const ctx=canvas.getContext('2d');
+  let W=canvas.width=innerWidth,H=canvas.height=innerHeight;
+  const petals=[];
+  for(let i=0;i<40;i++){petals.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*6+6,vy:Math.random()*0.3+0.1,rot:Math.random()*Math.PI*2});}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#06030d'); g.addColorStop(1,'#0b0710'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    for(const p of petals){
+      p.y+=p.vy; p.rot+=0.01; if(p.y>H)p.y=-20;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle='rgba(255,150,190,0.8)';
+      ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(p.s/2,-p.s,0,-p.s*1.5);ctx.quadraticCurveTo(-p.s/2,-p.s,0,0);ctx.fill();
+      ctx.restore();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+  window.addEventListener('resize',()=>{W=canvas.width=innerWidth; H=canvas.height=innerHeight;});
+
+  // L-Code Logic with correct password
+  function checkCode(){
+    const input = document.getElementById('codeInput').value.trim();
+    if(input === 'Kanisha19102008'){ // <-- your secret code
+        window.location.href = 'main.html'; // redirect to main page
+    } else {
+        alert('Wrong code! Try again 💖');
+    }
+  }
+</script>
+</body>
+</html>

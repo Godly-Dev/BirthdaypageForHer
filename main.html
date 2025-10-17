@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>For Kanisha — Happy Birthday</title>
+  <meta name="description" content="Soft pink romantic intro for Kanisha" />
+  <style>
+    :root{
+      --bg:#05030a; --black:#000000; --pink1:#ff7fb3; --pink2:#ff5fa0; --muted:#d8cbe0; --glass:rgba(255,255,255,0.04);
+      --accent:#ff6fa3; --radius:16px; --card:#100617;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#fff;background:var(--bg);-webkit-font-smoothing:antialiased}
+
+    /* Layout */
+    .wrap{min-height:100vh;display:flex;flex-direction:column}
+    header{position:fixed;left:0;right:0;top:12px;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;z-index:60}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand .k{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--pink1),var(--pink2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#200214}
+    .menu{position:relative}
+    .burger{width:44px;height:44px;border-radius:10px;border:none;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+    /* Side drawer */
+    .drawer{position:fixed;top:0;right:-320px;width:320px;height:100vh;background:linear-gradient(180deg,rgba(16,6,23,0.95),rgba(8,3,12,0.98));box-shadow:-30px 0 60px rgba(5,2,6,0.6);z-index:70;padding:22px;transition:right 420ms cubic-bezier(.2,.9,.2,1)}
+    .drawer.open{right:0}
+    .drawer h3{margin:8px 0 18px 0}
+    .navlink{display:block;padding:12px;border-radius:10px;color:var(--muted);text-decoration:none;margin-bottom:8px}
+    .navlink:hover{background:rgba(255,255,255,0.02);color:#fff}
+
+    /* Fullscreen stage */
+    #stage{position:relative;min-height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+
+    /* Intro / black overlay */
+    .overlay{position:absolute;inset:0;background:#000;z-index:50;display:flex;align-items:center;justify-content:center}
+    .introText{color:#fff;text-align:center;max-width:90%;padding:20px}
+    .introText h1{font-size:30px;letter-spacing:1px;margin:0}
+    .introText p{color:var(--muted);margin-top:12px}
+
+    /* Main content after intro */
+    .mainContent{position:relative;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;min-height:100vh}
+    .headline{font-size:28px;text-align:center;opacity:0;transform:translateY(6px);transition:all 700ms cubic-bezier(.2,.9,.2,1)}
+    .sub{color:var(--muted);margin-top:8px;opacity:0;transform:translateY(6px);transition:all 700ms cubic-bezier(.2,.9,.2,1) 120ms}
+
+    /* Decorative card */
+    .card{margin-top:22px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.06));padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);backdrop-filter:blur(6px);opacity:0;transform:translateY(8px);transition:all 700ms cubic-bezier(.2,.9,.2,1) 220ms}
+    .enterBtn{margin-top:12px;padding:10px 18px;border-radius:999px;border:none;background:linear-gradient(90deg,var(--pink1),var(--pink2));color:#200214;font-weight:700;cursor:pointer}
+
+    /* Floating non-interactive particle canvas sits behind content */
+    #bgCanvas{position:absolute;inset:0;z-index:10}
+
+    footer{position:fixed;left:12px;bottom:12px;color:var(--muted);font-size:13px;z-index:40}
+
+    /* Responsive */
+    @media (max-width:600px){
+      .introText h1{font-size:22px}
+      .headline{font-size:20px}
+      .brand .k{width:38px;height:38px}
+      .drawer{width:100%;right:-100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand" aria-hidden>
+        <div class="k"><img src="Logo.png" alt="K"></div>
+        <div style="line-height:1"><div style="font-weight:700">For Kanisha</div><div style="font-size:12px;color:var(--muted)">Happy Birthday</div></div>
+      </div>
+      <div class="menu">
+        <button class="burger" id="burgerBtn" aria-label="Open menu">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="2" rx="1" fill="white" opacity="0.9"/><rect y="6" width="20" height="2" rx="1" fill="white" opacity="0.9"/><rect y="12" width="20" height="2" rx="1" fill="white" opacity="0.9"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Drawer menu -->
+    <aside class="drawer" id="drawer" aria-hidden="true">
+      <h3 style="margin:0 0 6px 0">Menu</h3>
+      <a class="navlink" href="index.html">🏠 Home</a>
+      <a class="navlink" href="gifts.html">🎁 Gifts</a>
+      <div style="margin-top:22px;color:var(--muted);font-size:13px">Made with ❤️ For My Special Queen </div>
+    </aside>
+
+    <!-- Stage (background canvas + content) -->
+    <main id="stage">
+      <canvas id="bgCanvas" aria-hidden></canvas>
+
+      <!-- Black full-screen intro overlay (will fade with timed animation) -->
+      <div class="overlay" id="overlay">
+        <div class="introText">
+          <h1 id="introMsg">Happy Birthday, Kanisha 💖</h1>
+          <p id="introSub">A Little Suprise Made Just For You ❤️</p>
+        </div>
+      </div>
+
+      <!-- Main content appears AFTER intro animation finishes -->
+      <div class="mainContent" id="mainContent" aria-live="polite">
+        <div class="headline" id="headline">For My <span style="color:var(--accent)">Kanisha Don 💖</span></div>
+        <div class="sub" id="sub">May Your Day Be Full Of Love, Light And Sweet Surprises My Good Girl ✨</div>
+        <div class="card" id="card"><button class="enterBtn" onclick="location.href='gifts.html'">Open Gifts</button></div>
+      </div>
+
+      <footer>Tap The Menu To Switch Between Pages My Queen </footer>
+    </main>
+
+  </div>
+
+  <script>
+    // ------------------ Drawer Menu ------------------
+    const burger = document.getElementById('burgerBtn');
+    const drawer = document.getElementById('drawer');
+    burger.addEventListener('click', ()=>{
+      const open = drawer.classList.toggle('open');
+      drawer.setAttribute('aria-hidden', String(!open));
+    });
+
+    // Close drawer when clicking outside (mobile friendly)
+    document.addEventListener('click', (e)=>{
+      if(!drawer.classList.contains('open')) return;
+      const inside = drawer.contains(e.target) || burger.contains(e.target);
+      if(!inside) { drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+    });
+
+    // ------------------ Intro sequence ------------------
+    // Sequence: show black overlay (already visible) -> fade in text -> hold -> fade out overlay -> reveal background and main content
+    const overlay = document.getElementById('overlay');
+    const introMsg = document.getElementById('introMsg');
+    const introSub = document.getElementById('introSub');
+    const headline = document.getElementById('headline');
+    const sub = document.getElementById('sub');
+    const card = document.getElementById('card');
+
+    function sequenceStart(){
+      // Step timings (ms)
+      const fadeIn = 1500; const hold = 2000; const fadeOut = 1500; const revealDelay = 300;
+
+      // Ensure overlay visible and black
+      overlay.style.transition = `opacity ${fadeOut}ms ease-out`;
+      // Fade-in effect for text: use opacity transitions via inline style
+      introMsg.style.opacity = 0; introSub.style.opacity = 0;
+      introMsg.style.transition = `opacity ${fadeIn}ms ease, transform ${fadeIn}ms ease`;
+      introSub.style.transition = `opacity ${fadeIn}ms ease ${120}ms, transform ${fadeIn}ms ease ${120}ms`;
+      introMsg.style.transform = 'translateY(6px)'; introSub.style.transform = 'translateY(6px)';
+
+      // start fade-in
+      requestAnimationFrame(()=>{
+        introMsg.style.opacity = 1; introMsg.style.transform = 'translateY(0)';
+        introSub.style.opacity = 1; introSub.style.transform = 'translateY(0)';
+      });
+
+      // After fadeIn + hold: fade overlay out
+      setTimeout(()=>{
+        overlay.style.opacity = 0;
+        // reveal background/content after fadeOut
+        setTimeout(()=>{
+          overlay.style.display = 'none';
+          // reveal headline and card with gentle motion
+          headline.style.opacity = 1; headline.style.transform = 'translateY(0)';
+          sub.style.opacity = 1; sub.style.transform = 'translateY(0)';
+          card.style.opacity = 1; card.style.transform = 'translateY(0)';
+        }, fadeOut);
+      }, fadeIn + hold);
+    }
+
+    // Start sequence after small delay so page loads smoothly
+    window.addEventListener('load', ()=>{ setTimeout(sequenceStart, 420); });
+
+    // ------------------ Background Canvas (non-interactive particles) ------------------
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let W=canvas.width = innerWidth; let H=canvas.height = innerHeight;
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = innerWidth * DPR; canvas.height = innerHeight * DPR; canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; ctx.scale(DPR,DPR);
+
+    window.addEventListener('resize', ()=>{
+      W = canvas.width = innerWidth * DPR; H = canvas.height = innerHeight * DPR;
+      canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; ctx.scale(DPR,DPR);
+    });
+
+    // Particle system: soft floating hearts & petals
+    const particles = [];
+    const maxP = Math.floor(Math.max(18, innerWidth/40));
+
+    function rand(a,b){ return a + Math.random()*(b-a); }
+
+    function makeParticles(){
+      particles.length = 0;
+      const n = maxP;
+      for(let i=0;i<n;i++){
+        const size = rand(8,28);
+        particles.push({
+          x: rand(0,innerWidth), y: rand(-innerHeight, innerHeight), vx: rand(-0.15,0.15), vy: rand(0.15,0.6), r:size, rot:rand(0,Math.PI*2), life: rand(8000,22000), t:0, type: Math.random()>0.6? 'heart':'petal', alpha: rand(0.35,0.95)
+        });
+      }
+    }
+    makeParticles();
+
+    function drawHeart(x,y,s,alpha,rot){
+      ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      const top = -s*0.25;
+      ctx.moveTo(0, top);
+      ctx.bezierCurveTo(s*0.5, -s*0.8, s*1.4, -s*0.1, 0, s);
+      ctx.bezierCurveTo(-s*1.4, -s*0.1, -s*0.5, -s*0.8, 0, top);
+      ctx.closePath();
+      // gradient fill soft pink
+      const g = ctx.createLinearGradient(-s,s,s,-s);
+      g.addColorStop(0, 'rgba(255,127,179,0.95)');
+      g.addColorStop(1, 'rgba(255,95,160,0.85)');
+      ctx.fillStyle = g; ctx.fill();
+      ctx.restore(); ctx.globalAlpha = 1;
+    }
+
+    function drawPetal(x,y,s,alpha,rot){
+      ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.quadraticCurveTo(s*0.6, -s*0.9, 0, -s*1.6);
+      ctx.quadraticCurveTo(-s*0.6, -s*0.9, 0, 0);
+      ctx.closePath();
+      const g = ctx.createLinearGradient(0,-s*1.6,0,0);
+      g.addColorStop(0, 'rgba(255,220,235,0.95)');
+      g.addColorStop(1, 'rgba(255,160,200,0.85)');
+      ctx.fillStyle = g; ctx.fill();
+      ctx.restore(); ctx.globalAlpha = 1;
+    }
+
+    let last = performance.now();
+    function loop(now){
+      const dt = now - last; last = now;
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      // subtle background gradient for depth
+      const bg = ctx.createLinearGradient(0,0,0,innerHeight);
+      bg.addColorStop(0, '#05030a'); bg.addColorStop(1, '#0b0710');
+      ctx.fillStyle = bg; ctx.fillRect(0,0,innerWidth,innerHeight);
+
+      for(const p of particles){
+        p.t += dt;
+        p.x += p.vx * (dt*0.06);
+        p.y += p.vy * (dt*0.06);
+        p.rot += 0.002 * (p.vx>0?1:-1);
+        // wrap
+        if(p.y - p.r > innerHeight + 40) { p.y = -40; p.x = rand(0,innerWidth); }
+        if(p.x < -60) p.x = innerWidth + 60;
+        if(p.x > innerWidth + 60) p.x = -60;
+        const easeAlpha = Math.max(0.18, Math.min(1, p.alpha * (0.6 + 0.4*Math.sin(p.t/1200))));
+        if(p.type === 'heart') drawHeart(p.x, p.y, p.r*0.8, easeAlpha, p.rot);
+        else drawPetal(p.x, p.y, p.r*0.9, easeAlpha, p.rot);
+      }
+
+      // soft rising glow in center
+      const cx = innerWidth/2, cy = innerHeight/2;
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(innerWidth, innerHeight)/1.5);
+      grad.addColorStop(0, 'rgba(255,120,170,0.06)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = grad; ctx.fillRect(0,0,innerWidth,innerHeight);
+
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    // ------------------ Accessibility: reduce motion respect ------------------
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(mq.matches){
+      // stop animations: hide overlay immediately and show content
+      overlay.style.display = 'none'; headline.style.opacity = 1; sub.style.opacity = 1; card.style.opacity = 1;
+      particles.length = 0;
+    }
+
+    // ------------------ Helpful notes ------------------
+    // Edit the intro text by changing the innerText of #introMsg and #introSub
+    // Link the Open Gifts button to gifts.html (already set). To change menu links, edit <a class="navlink"> in the drawer.
+
+  </script>
+</body>
+</html>
